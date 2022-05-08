@@ -21,12 +21,23 @@ class infoParser:
         self.basefile = basefile
         self.container = ct.container
         self.validInputFile()
+        self.createOuputFolder()
+
+    def createOuputFolder(self):
+        """
+        create folder for writing out files
+        """
+        if not os.path.exists(output_folder):
+            os.makedirs(output_folder)
 
     def validInputFile(self):
+        """
+        validate if inputfile is a valid one
+        """
         supported_types = infoParser.getSupportedFormats(self.container)
         if (
             not os.path.isfile(self.basefile)
-            or os.path.splitext(self.basefile)[1:] in supported_types
+            or not os.path.splitext(self.basefile)[-1][1:] in supported_types
         ):
             raise ValueError("no valid input:not a file or not valid extension")
 
