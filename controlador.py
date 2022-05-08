@@ -20,6 +20,7 @@ class infoParser:
         """
         self.basefile = basefile
         self.container = ct.container
+        self.ext = None
         self.validInputFile()
         self.createOuputFolder()
 
@@ -35,22 +36,10 @@ class infoParser:
         validate if inputfile is a valid one
         """
         supported_types = infoParser.getSupportedFormats(self.container)
-        if (
-            not os.path.isfile(self.basefile)
-            or not os.path.splitext(self.basefile)[-1][1:] in supported_types
-        ):
+        ext = os.path.splitext(self.basefile)[-1][1:]
+        if not os.path.isfile(self.basefile) or not ext in supported_types:
             raise ValueError("no valid input:not a file or not valid extension")
-
-    @property
-    def fileFormat(self):
-        """
-        return the file extension
-
-        Returns:
-            str: file extension
-        """
-        extension = os.path.splitext(self.basefile)[-1]
-        return extension[1:]
+        self.ext = ext
 
     @staticmethod
     def getSupportedFormats(container):
@@ -63,7 +52,6 @@ class infoParser:
         Returns:
             str: valid formats
         """
-        #
         return [k for k in container.serializers.keys()]
 
     def getDefaultSerializer(self):
@@ -73,8 +61,7 @@ class infoParser:
         Returns:
             Serializer: default serializer
         """
-        format = self.fileFormat
-        return self.getSerializer(format)
+        return self.getSerializer(self.ext)
 
     def getSerializer(self, format):
         """
